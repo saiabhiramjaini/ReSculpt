@@ -4,6 +4,11 @@ import { InputBox } from "../components/InputBox";
 import { useState } from "react";
 import axios from "axios";
 import { ForgotPasswordInput } from "@abhiram2k03/input-validation";
+import { useNavigate } from "react-router-dom";
+
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const ForgotPassword = () => {
   const [forgotPasswordData, setForgotPasswordData] = useState<ForgotPasswordInput>({
@@ -12,6 +17,7 @@ export const ForgotPassword = () => {
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
+  const navigate = useNavigate();
   axios.defaults.withCredentials = true;
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -20,7 +26,32 @@ export const ForgotPassword = () => {
       const response = await axios.post(`${BACKEND_URL}/api/v1/auth/forgotpassword`, { 
         email: forgotPasswordData.email
       });
-      alert(response.data.msg);
+      if(response.status == 200 || response.status == 201){
+        toast.success(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/");
+      }
+      else{
+        toast.error(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -48,6 +79,7 @@ export const ForgotPassword = () => {
         
       </div>
     </div>
+    <ToastContainer/>
     </>
   );
 };

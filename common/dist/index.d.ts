@@ -43,7 +43,7 @@ export declare const resetPasswordSchema: z.ZodObject<{
     cPassword: string;
 }>;
 export declare const wasteRequirementSchema: z.ZodObject<{
-    requirementId: z.ZodNumber;
+    requirementId: z.ZodOptional<z.ZodNumber>;
     image: z.ZodString;
     name: z.ZodString;
     description: z.ZodString;
@@ -56,26 +56,26 @@ export declare const wasteRequirementSchema: z.ZodObject<{
     width: z.ZodOptional<z.ZodNumber>;
     height: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    requirementId: number;
     image: string;
     name: string;
     description: string;
     price: number;
     initialQuantity: number;
     requiredQuantity: number;
+    requirementId?: number | undefined;
     color?: string | undefined;
     weight?: number | undefined;
     length?: number | undefined;
     width?: number | undefined;
     height?: number | undefined;
 }, {
-    requirementId: number;
     image: string;
     name: string;
     description: string;
     price: number;
     initialQuantity: number;
     requiredQuantity: number;
+    requirementId?: number | undefined;
     color?: string | undefined;
     weight?: number | undefined;
     length?: number | undefined;
@@ -83,7 +83,7 @@ export declare const wasteRequirementSchema: z.ZodObject<{
     height?: number | undefined;
 }>;
 export declare const innovativeProdSchema: z.ZodObject<{
-    productId: z.ZodNumber;
+    productId: z.ZodOptional<z.ZodNumber>;
     image: z.ZodString;
     name: z.ZodString;
     description: z.ZodString;
@@ -91,7 +91,7 @@ export declare const innovativeProdSchema: z.ZodObject<{
     quantity: z.ZodNumber;
     color: z.ZodOptional<z.ZodString>;
     material: z.ZodOptional<z.ZodString>;
-    weight: z.ZodOptional<z.ZodString>;
+    weight: z.ZodOptional<z.ZodNumber>;
     length: z.ZodOptional<z.ZodNumber>;
     width: z.ZodOptional<z.ZodNumber>;
     height: z.ZodOptional<z.ZodNumber>;
@@ -100,11 +100,11 @@ export declare const innovativeProdSchema: z.ZodObject<{
     name: string;
     description: string;
     price: number;
-    productId: number;
     quantity: number;
+    productId?: number | undefined;
     color?: string | undefined;
     material?: string | undefined;
-    weight?: string | undefined;
+    weight?: number | undefined;
     length?: number | undefined;
     width?: number | undefined;
     height?: number | undefined;
@@ -113,30 +113,30 @@ export declare const innovativeProdSchema: z.ZodObject<{
     name: string;
     description: string;
     price: number;
-    productId: number;
     quantity: number;
+    productId?: number | undefined;
     color?: string | undefined;
     material?: string | undefined;
-    weight?: string | undefined;
+    weight?: number | undefined;
     length?: number | undefined;
     width?: number | undefined;
     height?: number | undefined;
 }>;
 export declare const contributionSchema: z.ZodObject<{
-    id: z.ZodNumber;
+    id: z.ZodOptional<z.ZodNumber>;
     mobile: z.ZodString;
     quantity: z.ZodNumber;
     address: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     quantity: number;
-    id: number;
     mobile: string;
     address: string;
+    id?: number | undefined;
 }, {
     quantity: number;
-    id: number;
     mobile: string;
     address: string;
+    id?: number | undefined;
 }>;
 export type SignupInput = z.infer<typeof signupSchema>;
 export type SigninInput = z.infer<typeof signinSchema>;
@@ -144,3 +144,4 @@ export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type AddInnovativeProdInput = z.infer<typeof innovativeProdSchema>;
 export type AddWasteRequirementInput = z.infer<typeof wasteRequirementSchema>;
+export type ContributionInput = z.infer<typeof contributionSchema>;

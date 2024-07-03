@@ -1,28 +1,16 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import * as z from "zod";
 import { AuthenticatedRequest } from "../utils/types";
 import cloudinary from "../utils/cloudinary";
+import { wasteRequirementSchema } from "@abhiram2k03/resculpt";
 
 const prisma = new PrismaClient();
 const WasteRequirement = prisma.wasteRequirement;
 
-export const addWasteRequirementSchema = z.object({
-  image: z.string().optional(),
-  name: z.string(),
-  description: z.string(),
-  price: z.number(),
-  initialQuantity: z.number(),
-  color: z.string().optional(),
-  weight: z.number().optional(),
-  length: z.number().optional(),
-  width: z.number().optional(),
-  height: z.number().optional(),
-});
 
 export const addWasteRequirement = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { image, name, description, price, initialQuantity, color, weight, length, width, height} = addWasteRequirementSchema.parse(req.body);
+    const { image, name, description, price, initialQuantity, color, weight, length, width, height} = wasteRequirementSchema.parse(req.body);
     const userId = req.user?.id;
     if(image){
       const uploadRes = await cloudinary.uploader.upload(image);
@@ -40,27 +28,27 @@ export const addWasteRequirement = async (req: AuthenticatedRequest, res: Respon
             length,
             width,
             height,
-            uploaderId: userId!, // Assigning the uploaderId to the userId
+            uploaderId: userId!,
           },
         });
     
-        return res.json({ msg: "Requirement uploaded successfully" });
+        return res.status(201).json({ msg: "Requirement uploaded successfully" });
       }
       else{
-        return res.json({ error: "Error uploading image" });
+        return res.status(400).json({ error: "Error uploading image" });
       }
     }
     else{
-      return res.json({ msg: "Image data is required" });
+      return res.status(400).json({ msg: "Image data is required" });
     }
     
   } catch (error: any) {
     if (error.errors && error.errors[0].message) {
       const message = error.errors[0].message;
-      return res.json({ msg: message });
+      return res.status(400).json({ msg: message });
     }
     console.log(error);
-    return res.json({ msg: "Internal Server Error" });
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
 
@@ -68,13 +56,13 @@ export const getAllWasteRequirements = async (req: Request, res: Response) => {
   try {
     const wasteRequirements = await WasteRequirement.findMany();
 
-    return res.json(wasteRequirements);
+    return res.status(200).json(wasteRequirements);
   } catch (error: any) {
     if (error.errors && error.errors[0].message) {
       const message = error.errors[0].message;
-      return res.json({ msg: message });
+      return res.status(400).json({ msg: message });
     }
-    return res.json({ msg: "Internal Server Error" });
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
 
@@ -88,13 +76,13 @@ export const getWasteRequirements = async (req: Request, res: Response) => {
       },
     });
 
-    return res.json(wasteRequirements);
+    return res.status(200).json(wasteRequirements);
   } catch (error: any) {
     if (error.errors && error.errors[0].message) {
       const message = error.errors[0].message;
-      return res.json({ msg: message });
+      return res.status(400).json({ msg: message });
     }
-    return res.json({ msg: "Internal Server Error" });
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
 
@@ -106,13 +94,13 @@ export const getAllSatisfiedRequirements = async (req: Request, res: Response) =
       },
     });
 
-    return res.json(wasteRequirements);
+    return res.status(200).json(wasteRequirements);
   } catch (error: any) {
     if (error.errors && error.errors[0].message) {
       const message = error.errors[0].message;
-      return res.json({ msg: message });
+      return res.status(400).json({ msg: message });
     }
-    return res.json({ msg: "Internal Server Error" });
+    return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
 
@@ -133,7 +121,7 @@ export const wasteReq = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(404).json({ msg: "Requirement not found" });
     }
 
-    return res.json(requirement);
+    return res.status(200).json(requirement);
   } catch (err) {
     console.error(err); // Log the error for debugging purposes
     return res.status(500).json({ msg: "Internal Server Error" });

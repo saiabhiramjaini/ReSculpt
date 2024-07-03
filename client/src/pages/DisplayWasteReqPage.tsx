@@ -39,7 +39,7 @@ export const DisplayWasteReqPage = () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/getWasteRequirements`);
         setWasteRequirements(response.data);
-        setDisplayedRequirements(response.data); // Set displayed requirements to all fetched requirements
+        setDisplayedRequirements(response.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching waste requirements:", error);

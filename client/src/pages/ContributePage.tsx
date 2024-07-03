@@ -5,7 +5,11 @@ import { Button } from "../components/Button";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { TextRevealCardPreview } from "../components/text-reveal-cardComponent";
+import { useNavigate } from "react-router-dom";
 
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const ContributePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +21,7 @@ export const ContributePage = () => {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   axios.defaults.withCredentials = true;
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -27,7 +32,32 @@ export const ContributePage = () => {
         `${BACKEND_URL}/contribution/${id}`,
         { mobile, quantity, address }
       );
-      alert(response.data.msg);
+      if(response.status == 200 || response.status == 201){
+        toast.success(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/");
+      }
+      else{
+        toast.error(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } catch (e) {
       console.log(e);
     } finally {
@@ -69,6 +99,7 @@ export const ContributePage = () => {
           {loading && <p>Loading...</p>}
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 };

@@ -16,13 +16,13 @@ exports.logout = exports.authCheck = exports.resetPassword = exports.profile = e
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const input_validation_1 = require("@abhiram2k03/input-validation");
+const resculpt_1 = require("@abhiram2k03/resculpt");
 const email_1 = require("../utils/email");
 const prisma = new client_1.PrismaClient();
 const User = prisma.user;
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { username, email, password, cPassword } = input_validation_1.signupSchema.parse(req.body);
+        const { username, email, password, cPassword } = resculpt_1.signupSchema.parse(req.body);
         if (password !== cPassword) {
             return res.json({ msg: "Passwords do not match" });
         }
@@ -32,7 +32,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         if (user) {
-            return res.json({ msg: "User already exists" });
+            return res.status(400).json({ msg: "User already exists" });
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const saveUser = yield User.create({
@@ -44,7 +44,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         const token = jsonwebtoken_1.default.sign({ userId: saveUser.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
         res.cookie('token', token, { httpOnly: true });
-        return res.json({ msg: "User created Successfully" });
+        return res.status(201).json({ msg: "User created Successfully", token });
     }
     catch (error) {
         // If validation fails, return error message
@@ -60,14 +60,14 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.signup = signup;
 const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password } = input_validation_1.signinSchema.parse(req.body);
+        const { email, password } = resculpt_1.signinSchema.parse(req.body);
         const user = yield User.findFirst({
             where: {
                 email
             }
         });
         if (!user) {
-            return res.json({ msg: "Email doesn't exist" });
+            return res.status(400).json({ msg: "Email doesn't exist" });
         }
         const passwordMatch = yield bcrypt_1.default.compare(password, user.password);
         if (!passwordMatch) {
@@ -75,7 +75,7 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const token = jsonwebtoken_1.default.sign({ userId: user.id }, process.env.JWT_SECRET);
         res.cookie('token', token, { httpOnly: true });
-        return res.json({ msg: "Signin successful" });
+        return res.status(200).json({ msg: "Signin successful", token });
     }
     catch (error) {
         // If validation fails, return error message
@@ -85,20 +85,20 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // For any other errors, print "Internal Server Error"
         console.error(error); // Log the error for debugging purposes
-        return res.json({ msg: "Internal Server Error" });
+        return res.status(500).json({ msg: "Internal Server Error" });
     }
 });
 exports.signin = signin;
 const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = input_validation_1.forgotPasswordSchema.parse(req.body);
+        const { email } = resculpt_1.forgotPasswordSchema.parse(req.body);
         const existingUser = yield User.findFirst({
             where: {
                 email
             }
         });
         if (!existingUser) {
-            return res.json({ msg: "User not found" });
+            return res.status(404).json({ msg: "User not found" });
         }
         // Generate token
         const token = jsonwebtoken_1.default.sign({ userId: existingUser.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
@@ -107,21 +107,21 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const emailResult = yield (0, email_1.sendEmail)(email, "Reset password", text);
         // Send email
         if (emailResult.success) {
-            return res.json({ msg: "Email sent successfully" });
+            return res.status(200).json({ msg: "Email sent successfully" });
         }
         else {
-            return res.json({ msg: emailResult.error });
+            return res.status(400).json({ msg: emailResult.error });
         }
     }
     catch (error) {
         // If validation fails, return error message
         if (error.errors && error.errors[0].message) {
             const message = error.errors[0].message;
-            return res.json({ msg: message });
+            return res.status(400).json({ msg: message });
         }
         // For any other errors, print "Internal Server Error"
         console.error(error); // Log the error for debugging purposes
-        return res.json({ msg: "Internal Server Error" });
+        return res.status(500).json({ msg: "Internal Server Error" });
     }
 });
 exports.forgotPassword = forgotPassword;
@@ -141,14 +141,14 @@ const profile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.profile = profile;
 const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { password, cPassword } = input_validation_1.resetPasswordSchema.parse(req.body);
+        const { password, cPassword } = resculpt_1.resetPasswordSchema.parse(req.body);
         const user = req.user;
         console.log('User object before update:', user); // Log the user object
         if (!user) {
             return res.status(401).json({ msg: 'Unauthorized' });
         }
         if (password !== cPassword) {
-            return res.json({ msg: "Passwords do not match" });
+            return res.status(400).json({ msg: "Passwords do not match" });
         }
         // Hash the password
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
@@ -158,7 +158,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         // Fetch the updated user object
         const updatedUser = yield User.findUnique({ where: { id: user.id } });
         console.log('Updated user object:', updatedUser); // Log the updated user object
-        return res.json({ msg: 'Password updated successfully', user: updatedUser });
+        return res.status(200).json({ msg: 'Password updated successfully', user: updatedUser });
     }
     catch (error) {
         // If validation fails, return error message
@@ -174,7 +174,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.resetPassword = resetPassword;
 const authCheck = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return res.json({ isAuthenticated: true });
+        return res.status(200).json({ isAuthenticated: true });
     }
     catch (e) {
         console.error(e);
@@ -184,6 +184,6 @@ const authCheck = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.authCheck = authCheck;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.clearCookie('token');
-    return res.json({ msg: "Logged out successfully" });
+    return res.status(200).json({ msg: "Logged out successfully" });
 });
 exports.logout = logout;

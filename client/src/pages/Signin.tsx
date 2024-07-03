@@ -9,7 +9,11 @@ import axios from "axios";
 import { SigninInput } from "@abhiram2k03/input-validation";
 import Lottie from "lottie-react";
 import signinAnimation from "../assets/signin.json";
-import { Loading } from "../components/Loading"; // Import the Loading component
+import { Loading } from "../components/Loading"; 
+
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Signin = () => {
   const [signinData, setSigninData] = useState<SigninInput>({
@@ -17,7 +21,7 @@ export const Signin = () => {
     password: "",
   });
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); // Add the loading state
+  const [loading, setLoading] = useState(false); 
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -25,16 +29,51 @@ export const Signin = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setLoading(true); // Set loading state to true before making the API request
+    setLoading(true); 
 
     try {
       const response = await axios.post(`${BACKEND_URL}/api/v1/auth/signin`, {
         email: signinData.email,
         password: signinData.password,
       });
-      alert(response.data.msg);
-      if (response.data.msg === "Signin successful") {
-        navigate("/home");
+      window.localStorage.setItem("loggedIn", "true");
+      if(response.status == 200 || response.status == 201){
+        toast.success(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/");
+      }
+      else if(response.status == 400 || response.status == 401){
+        toast.error(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+      else{
+        toast.error(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     } catch (e) {
       console.log(e);
@@ -78,11 +117,12 @@ export const Signin = () => {
             </div>
             <Button text="Submit" onClick={handleSubmit} />
             <div className="flex justify-end">
-              <TextLink text={"Don't have an account?"} linkTo={"/"} />
+              <TextLink text={"Don't have an account?"} linkTo={"/signup"} />
             </div>
           </div>
         </div>
       )}
+      <ToastContainer/>
     </>
   );
 };

@@ -47,8 +47,9 @@ export const ProfilePage = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${BACKEND_URL}/logout`);
-      navigate("/");
+      await axios.post(`${BACKEND_URL}/api/v1/auth/logout`);
+      window.localStorage.clear();
+      navigate("/signin");
     } catch (error) {
       console.error("Error during logout:", error);
     }

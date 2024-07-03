@@ -6,6 +6,11 @@ import { Button } from "../components/Button";
 import axios from "axios";
 import { Loading } from "../components/Loading";
 import { TextRevealCardPreview } from "../components/text-reveal-cardComponent";
+import { useNavigate } from "react-router-dom";
+
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const UploadWasteReqPage = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -34,6 +39,7 @@ export const UploadWasteReqPage = () => {
   };
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  const navigate = useNavigate();
   axios.defaults.withCredentials = true;
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -56,7 +62,32 @@ export const UploadWasteReqPage = () => {
         }
       );
       setLoading(false);
-      alert(response.data.msg);
+      if(response.status == 200 || response.status == 201){
+        toast.success(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/");
+      }
+      else{
+        toast.error(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } catch (e) {
       console.log(e);
       setLoading(false);
@@ -154,6 +185,7 @@ export const UploadWasteReqPage = () => {
           </div>
         </>
       )}
+      <ToastContainer/>
     </>
   );
 };

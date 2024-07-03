@@ -7,6 +7,10 @@ import { ResetPasswordInput } from "@abhiram2k03/input-validation";
 import { useNavigate } from "react-router-dom";
 
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 export const ResetPassword = () => {
   const [resetPasswordData, setResetPasswordData] = useState<ResetPasswordInput>({
     password: "",
@@ -26,9 +30,31 @@ export const ResetPassword = () => {
         password: resetPasswordData.password,
         cPassword: resetPasswordData.cPassword,
       });
-      alert(response.data.msg);
-      if (response.data.msg === 'password updated') {
-        navigate("/signin");
+      if(response.status == 200 || response.status == 201){
+        toast.success(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/");
+      }
+      else{
+        toast.error(response.data.msg, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     } catch (e) {
       console.log(e);
@@ -69,6 +95,7 @@ export const ResetPassword = () => {
 
       </div>
     </div>
+    <ToastContainer/>
     </>
   );
 };

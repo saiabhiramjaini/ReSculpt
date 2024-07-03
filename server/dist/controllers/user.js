@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrders = exports.orders = exports.contributions = exports.satisfiedWasteRequirements = exports.uploadedWasteRequirements = exports.uploadedInnovativeProducts = exports.contribute = exports.profile = void 0;
 const client_1 = require("@prisma/client");
+const resculpt_1 = require("@abhiram2k03/resculpt");
 const prisma = new client_1.PrismaClient();
 const User = prisma.user;
 const WasteRequirements = prisma.wasteRequirement;
@@ -29,7 +30,7 @@ const profile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 id: (_b = req.user) === null || _b === void 0 ? void 0 : _b.id,
             }
         });
-        return res.json({ userDetails });
+        return res.status(200).json({ userDetails });
     }
     catch (error) {
         console.error('Error fetching user profile:', error);
@@ -42,7 +43,7 @@ const contribute = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const userId = (_c = req.user) === null || _c === void 0 ? void 0 : _c.id;
         const requirementId = parseInt(req.params.id);
-        const { mobile, quantity, address } = req.body;
+        const { mobile, quantity, address } = resculpt_1.contributionSchema.parse(req.body);
         // Check if the user and requirement exist
         const user = yield User.findUnique({ where: { id: userId } });
         const requirement = yield WasteRequirements.findUnique({ where: { requirementId } });
@@ -75,7 +76,7 @@ const contribute = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             where: { requirementId },
             data: { requiredQuantity: { decrement: quantity } },
         });
-        return res.json({ msg: "Contribution uploaded successfully" });
+        return res.status(201).json({ msg: "Contribution uploaded successfully" });
     }
     catch (error) {
         console.error('Error contributing to requirement:', error);
@@ -91,7 +92,7 @@ const uploadedInnovativeProducts = (req, res) => __awaiter(void 0, void 0, void 
                 uploaderId: (_d = req.user) === null || _d === void 0 ? void 0 : _d.id
             }
         });
-        return res.json({ uploadedItems });
+        return res.status(200).json({ uploadedItems });
     }
     catch (e) {
         return res.status(500).json({ msg: 'Server error' });
@@ -106,7 +107,7 @@ const uploadedWasteRequirements = (req, res) => __awaiter(void 0, void 0, void 0
                 uploaderId: (_e = req.user) === null || _e === void 0 ? void 0 : _e.id
             }
         });
-        return res.json({ requirements });
+        return res.status(200).json({ requirements });
     }
     catch (e) {
         return res.status(500).json({ msg: 'Server error' });
@@ -123,7 +124,7 @@ const satisfiedWasteRequirements = (req, res) => __awaiter(void 0, void 0, void 
                 uploaderId: userId
             }
         });
-        return res.json({ requirements });
+        return res.status(200).json({ requirements });
     }
     catch (e) {
         return res.status(500).json({ msg: 'Server error' });
@@ -139,7 +140,7 @@ const contributions = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 wasteRequirement: true, // Include the associated WasteRequirement object
             },
         });
-        return res.json(userContributions);
+        return res.status(200).json(userContributions);
     }
     catch (e) {
         return res.status(500).json({ msg: "Internal Server Error" });
@@ -172,7 +173,7 @@ const orders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
         });
-        return res.json({ order, updatedProduct });
+        return res.status(201).json({ order, updatedProduct });
     }
     catch (e) {
         console.error("Error creating order:", e);
@@ -195,7 +196,7 @@ const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 product: true,
             },
         });
-        return res.json({ order });
+        return res.status(200).json({ order });
     }
     catch (e) {
         return res.status(500).json({ msg: "Internal Server Error" });

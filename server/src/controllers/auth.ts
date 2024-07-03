@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { forgotPasswordSchema, resetPasswordSchema, signinSchema, signupSchema } from "@abhiram2k03/input-validation";
+import { forgotPasswordSchema, resetPasswordSchema, signinSchema, signupSchema } from "@abhiram2k03/resculpt";
 import { sendEmail } from "../utils/email"
 import { AuthenticatedRequest } from "../utils/types";
 
@@ -24,7 +24,7 @@ export const signup = async (req: Request, res: Response)=>{
             }
         })
         if(user){
-            return res.json({msg: "User already exists"});
+            return res.status(400).json({msg: "User already exists"});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -39,7 +39,7 @@ export const signup = async (req: Request, res: Response)=>{
         const token = jwt.sign({ userId: saveUser.id }, process.env.JWT_SECRET!, { expiresIn: "1d" });
         res.cookie('token', token, { httpOnly: true });
         
-        return res.json({msg: "User created Successfully"})
+        return res.status(201).json({msg: "User created Successfully", token})
     }
     catch (error: any) {
         // If validation fails, return error message
@@ -65,7 +65,7 @@ export const signin = async (req: Request, res: Response)=>{
         })
 
         if(!user){
-            return res.json({msg: "Email doesn't exist"});
+            return res.status(400).json({msg: "Email doesn't exist"});
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -75,7 +75,7 @@ export const signin = async (req: Request, res: Response)=>{
 
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!);
         res.cookie('token', token, { httpOnly: true });
-        return res.json({msg: "Signin successful"})
+        return res.status(200).json({msg: "Signin successful", token})
     }
     catch (error: any) {
         // If validation fails, return error message
@@ -86,7 +86,7 @@ export const signin = async (req: Request, res: Response)=>{
       
         // For any other errors, print "Internal Server Error"
         console.error(error); // Log the error for debugging purposes
-        return res.json({ msg: "Internal Server Error" });
+        return res.status(500).json({ msg: "Internal Server Error" });
     }
 }
 
@@ -102,10 +102,9 @@ export const forgotPassword = async(req: Request, res:Response)=>{
         })
 
         if(!existingUser){
-            return res.json({msg: "User not found"})
+            return res.status(404).json({msg: "User not found"})
         }
-
-
+        
         // Generate token
         const token = jwt.sign({ userId: existingUser.id }, process.env.JWT_SECRET!, { expiresIn: "1d" });
         res.cookie('token', token, { httpOnly: true });
@@ -114,21 +113,21 @@ export const forgotPassword = async(req: Request, res:Response)=>{
 
         // Send email
         if (emailResult.success) {
-            return res.json({ msg: "Email sent successfully" });
+            return res.status(200).json({ msg: "Email sent successfully" });
         } else {
-            return res.json({ msg: emailResult.error });
+            return res.status(400).json({ msg: emailResult.error });
         }
     }
     catch (error: any) {
         // If validation fails, return error message
         if (error.errors && error.errors[0].message) {
           const message = error.errors[0].message;
-          return res.json({ msg: message });
+          return res.status(400).json({ msg: message });
         }
       
         // For any other errors, print "Internal Server Error"
         console.error(error); // Log the error for debugging purposes
-        return res.json({ msg: "Internal Server Error" });
+        return res.status(500).json({ msg: "Internal Server Error" });
     }
 }
 
@@ -157,7 +156,7 @@ export const resetPassword = async (req: AuthenticatedRequest, res: Response) =>
     }
 
     if (password !== cPassword) {
-      return res.json({ msg: "Passwords do not match" });
+      return res.status(400).json({ msg: "Passwords do not match" });
     }
 
     // Hash the password
@@ -171,7 +170,7 @@ export const resetPassword = async (req: AuthenticatedRequest, res: Response) =>
     const updatedUser = await User.findUnique({ where: { id: user.id } });
     console.log('Updated user object:', updatedUser); // Log the updated user object
 
-    return res.json({ msg: 'Password updated successfully', user: updatedUser });
+    return res.status(200).json({ msg: 'Password updated successfully', user: updatedUser });
   } catch (error: any) {
     // If validation fails, return error message
     if (error.errors && error.errors[0].message) {
@@ -187,7 +186,7 @@ export const resetPassword = async (req: AuthenticatedRequest, res: Response) =>
 
 export const authCheck = async(req: AuthenticatedRequest, res: Response)=>{
     try {
-      return res.json({isAuthenticated: true })
+      return res.status(200).json({isAuthenticated: true })
     } 
     catch (e) {
       console.error(e);
@@ -197,5 +196,5 @@ export const authCheck = async(req: AuthenticatedRequest, res: Response)=>{
 
 export const logout = async(req: Request, res: Response)=>{
     res.clearCookie('token');
-    return res.json({ msg: "Logged out successfully" });
+    return res.status(200).json({ msg: "Logged out successfully" });
 }

@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest } from "../utils/types";
 import { Request, Response } from "express"
+import { contributionSchema } from "@abhiram2k03/resculpt";
 const prisma = new PrismaClient();
 
 const User = prisma.user;
@@ -20,7 +21,7 @@ export const profile = async (req: AuthenticatedRequest, res: Response) => {
                 id: req.user?.id,
             }
         });
-        return res.json({userDetails});
+        return res.status(200).json({userDetails});
     } catch (error) {
       console.error('Error fetching user profile:', error);
       res.status(500).json({ msg: 'Server error' });
@@ -31,7 +32,7 @@ export const contribute = async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       const requirementId = parseInt(req.params.id);
-      const { mobile, quantity, address } = req.body;
+      const { mobile, quantity, address } = contributionSchema.parse(req.body);
   
       // Check if the user and requirement exist
       const user = await User.findUnique({ where: { id: userId } });
@@ -71,7 +72,7 @@ export const contribute = async (req: AuthenticatedRequest, res: Response) => {
         data: { requiredQuantity: { decrement: quantity } },
       });
   
-      return res.json({msg: "Contribution uploaded successfully"});
+      return res.status(201).json({msg: "Contribution uploaded successfully"});
     } catch (error) {
       console.error('Error contributing to requirement:', error);
       res.status(500).json({ msg: 'Server error' });
@@ -85,7 +86,7 @@ export const uploadedInnovativeProducts = async (req: AuthenticatedRequest, res:
                 uploaderId : req.user?.id
             }
         })
-        return res.json({uploadedItems});
+        return res.status(200).json({uploadedItems});
     }
     catch(e){
         return res.status(500).json({ msg: 'Server error' });
@@ -99,7 +100,7 @@ export const uploadedWasteRequirements = async (req: AuthenticatedRequest, res: 
                 uploaderId : req.user?.id
             }
         })
-        return res.json({requirements});
+        return res.status(200).json({requirements});
     }
     catch(e){
         return res.status(500).json({ msg: 'Server error' });
@@ -115,7 +116,7 @@ export const satisfiedWasteRequirements = async (req: AuthenticatedRequest, res:
                 uploaderId : userId
             }
         })
-        return res.json({ requirements});
+        return res.status(200).json({ requirements});
     }
     catch(e){
         return res.status(500).json({ msg: 'Server error' });
@@ -131,7 +132,7 @@ export const contributions = async (req: AuthenticatedRequest, res: Response) =>
         },
       });
   
-      return res.json(userContributions);
+      return res.status(200).json(userContributions);
     } catch (e) {
       return res.status(500).json({ msg: "Internal Server Error" });
     }
@@ -167,14 +168,12 @@ export const orders = async (req: AuthenticatedRequest, res: Response) => {
       }
     })
 
-    return res.json({ order , updatedProduct});
+    return res.status(201).json({ order , updatedProduct});
   } catch (e) {
     console.error("Error creating order:", e);
     return res.status(500).json({ msg: "Internal Server Error" });
   }
 };
-
-
 
 export const getOrders = async (req:AuthenticatedRequest, res: Response)=>{
   try{
@@ -192,7 +191,7 @@ export const getOrders = async (req:AuthenticatedRequest, res: Response)=>{
         product: true,
       },
     })
-    return res.json({order});
+    return res.status(200).json({order});
   }
   catch(e){
     return res.status(500).json({ msg: "Internal Server Error" });
