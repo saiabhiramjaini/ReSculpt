@@ -25,8 +25,8 @@ exports.wasteRequirementSchema = zod_1.z.object({
     name: zod_1.z.string().min(1, { message: "Name is required" }),
     description: zod_1.z.string().min(1, { message: "Description is required" }),
     price: zod_1.z.number().min(0, { message: "Price is required" }),
-    initialQuantity: zod_1.z.number().min(0, { message: "Initial quantity is required" }),
-    requiredQuantity: zod_1.z.number().min(0, { message: "Required quantity is required" }),
+    initialQuantity: zod_1.z.number().min(1, { message: "Initial quantity is required" }),
+    requiredQuantity: zod_1.z.number().min(1, { message: "Required quantity is required" }),
     color: zod_1.z.string().optional(),
     weight: zod_1.z.number().optional(),
     length: zod_1.z.number().optional(),
@@ -38,8 +38,8 @@ exports.innovativeProdSchema = zod_1.z.object({
     image: zod_1.z.string().min(1, { message: "Image URL is required" }),
     name: zod_1.z.string().min(1, { message: "Name is required" }),
     description: zod_1.z.string().min(1, { message: "Description is required" }),
-    price: zod_1.z.number().min(0, { message: "Price is required" }),
-    quantity: zod_1.z.number().min(0, { message: "Quantity is required" }),
+    price: zod_1.z.number().min(1, { message: "Price is required" }),
+    quantity: zod_1.z.number().min(1, { message: "Quantity is required" }),
     color: zod_1.z.string().optional(),
     material: zod_1.z.string().optional(),
     weight: zod_1.z.number().optional(),
@@ -50,6 +50,6 @@ exports.innovativeProdSchema = zod_1.z.object({
 exports.contributionSchema = zod_1.z.object({
     id: zod_1.z.number().optional(),
     mobile: zod_1.z.string().min(1, { message: "Mobile number is required" }),
-    quantity: zod_1.z.number().min(0, { message: "Quantity is required" }),
+    quantity: zod_1.z.number().min(1, { message: "Quantity is required" }),
     address: zod_1.z.string().min(1, { message: "Address is required" })
 });

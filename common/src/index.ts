@@ -27,8 +27,8 @@ export const wasteRequirementSchema = z.object({
     name: z.string().min(1,{ message: "Name is required" }),
     description: z.string().min(1,{ message: "Description is required" }),
     price: z.number().min(0,{ message: "Price is required" }),
-    initialQuantity: z.number().min(0,{ message: "Initial quantity is required" }),
-    requiredQuantity: z.number().min(0,{ message: "Required quantity is required" }),
+    initialQuantity: z.number().min(1,{ message: "Initial quantity is required" }),
+    requiredQuantity: z.number().min(1,{ message: "Required quantity is required" }),
     color: z.string().optional(),
     weight: z.number().optional(),
     length: z.number().optional(),
@@ -41,8 +41,8 @@ export const innovativeProdSchema = z.object({
     image: z.string().min(1,{ message: "Image URL is required" }),
     name: z.string().min(1,{ message: "Name is required" }),
     description: z.string().min(1,{ message: "Description is required" }),
-    price: z.number().min(0,{ message: "Price is required" }),
-    quantity: z.number().min(0,{ message: "Quantity is required" }),
+    price: z.number().min(1,{ message: "Price is required" }),
+    quantity: z.number().min(1,{ message: "Quantity is required" }),
     color: z.string().optional(),
     material: z.string().optional(),
     weight: z.number().optional(),
@@ -54,7 +54,7 @@ export const innovativeProdSchema = z.object({
 export const contributionSchema = z.object({
     id: z.number().optional(),
     mobile: z.string().min(1,{ message: "Mobile number is required" }),
-    quantity: z.number().min(0,{ message: "Quantity is required" }),
+    quantity: z.number().min(1,{ message: "Quantity is required" }),
     address: z.string().min(1,{ message: "Address is required" })
 });
 

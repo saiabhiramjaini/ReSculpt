@@ -36,7 +36,7 @@ export const signup = async (req: Request, res: Response)=>{
             }
         })
 
-        const token = jwt.sign({ userId: saveUser.id }, process.env.JWT_SECRET!, { expiresIn: "1d" });
+        const token = jwt.sign({ userId: saveUser.id }, process.env.JWT_SECRET!);
         res.cookie('token', token, { httpOnly: true });
         
         return res.status(201).json({msg: "User created Successfully", token})
@@ -63,9 +63,9 @@ export const signin = async (req: Request, res: Response)=>{
                 email
             }
         })
-
+        
         if(!user){
-            return res.status(400).json({msg: "Email doesn't exist"});
+            return res.json({msg: "Email doesn't exist"});
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);

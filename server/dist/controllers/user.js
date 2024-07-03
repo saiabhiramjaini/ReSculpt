@@ -79,8 +79,14 @@ const contribute = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(201).json({ msg: "Contribution uploaded successfully" });
     }
     catch (error) {
-        console.error('Error contributing to requirement:', error);
-        res.status(500).json({ msg: 'Server error' });
+        // If validation fails, return error message
+        if (error.errors && error.errors[0].message) {
+            const message = error.errors[0].message;
+            return res.json({ msg: message });
+        }
+        // For any other errors, print "Internal Server Error"
+        console.error(error); // Log the error for debugging purposes
+        return res.json({ msg: "Internal Server Error" });
     }
 });
 exports.contribute = contribute;

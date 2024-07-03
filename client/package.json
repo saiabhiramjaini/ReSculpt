@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@abhiram2k03/input-validation": "^1.2.2",
+    "@abhiram2k03/resculpt": "^1.0.7",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@stripe/react-stripe-js": "^2.7.0",

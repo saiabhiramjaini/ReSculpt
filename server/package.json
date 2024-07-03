@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@abhiram2k03/input-validation": "^1.2.2",
-    "@abhiram2k03/resculpt": "^1.0.5",
+    "@abhiram2k03/resculpt": "^1.0.7",
     "@prisma/client": "^5.13.0",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.1.0",

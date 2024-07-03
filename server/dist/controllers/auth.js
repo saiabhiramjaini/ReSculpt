@@ -42,7 +42,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 password: hashedPassword
             }
         });
-        const token = jsonwebtoken_1.default.sign({ userId: saveUser.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        const token = jsonwebtoken_1.default.sign({ userId: saveUser.id }, process.env.JWT_SECRET);
         res.cookie('token', token, { httpOnly: true });
         return res.status(201).json({ msg: "User created Successfully", token });
     }
@@ -67,7 +67,7 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         if (!user) {
-            return res.status(400).json({ msg: "Email doesn't exist" });
+            return res.json({ msg: "Email doesn't exist" });
         }
         const passwordMatch = yield bcrypt_1.default.compare(password, user.password);
         if (!passwordMatch) {
