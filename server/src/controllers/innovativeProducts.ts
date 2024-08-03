@@ -8,20 +8,6 @@ import { innovativeProdSchema } from "@abhiram2k03/resculpt";
 const prisma = new PrismaClient();
 const InnovativeProd = prisma.innovativeProduct;
 
-// export const addInnovativeProdSchema = z.object({
-//   image: z.string().optional(),
-//   name: z.string(),
-//   description: z.string(),
-//   price: z.number(),
-//   quantity: z.number(),
-//   color: z.string().optional(),
-//   material: z.string().optional(),
-//   weight: z.number().optional(),
-//   length: z.number().optional(),
-//   width: z.number().optional(),
-//   height: z.number().optional(),
-// });
-
 export const addInnovativeProd = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
@@ -44,7 +30,7 @@ export const addInnovativeProd = async (req: AuthenticatedRequest, res: Response
       if (uploadRes) {
         const innovative_products = await InnovativeProd.create({
           data: {
-            image,
+            image: uploadRes.url,
             name,
             description,
             price,

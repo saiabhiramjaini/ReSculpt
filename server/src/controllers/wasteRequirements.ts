@@ -17,7 +17,7 @@ export const addWasteRequirement = async (req: AuthenticatedRequest, res: Respon
       if(uploadRes){
         const waste_requirement = await WasteRequirement.create({
           data: {
-            image,
+            image: uploadRes.url,
             name,
             description,
             price,

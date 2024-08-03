@@ -29,7 +29,6 @@ export const UploadWasteReqPage = () => {
   const navigate = useNavigate();
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-  axios.defaults.withCredentials = true;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0];

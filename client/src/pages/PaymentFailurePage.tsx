@@ -9,7 +9,7 @@ export const PaymentFailurePage = () => {
 
     const onClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        navigate("/home");
+        navigate("/");
     }
 
     return (

@@ -6,7 +6,6 @@ import axios from "axios";
 import { TextRevealCardPreview } from "../components/text-reveal-cardComponent";
 import { Loading } from "../components/Loading";
 import { useNavigate } from "react-router-dom";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AddInnovativeProdInput } from "@abhiram2k03/resculpt";
@@ -46,12 +45,13 @@ export const UploadInnovativeProdsPage = () => {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
 
-  axios.defaults.withCredentials = true;
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       setLoading(true);
       const response = await axios.post(`${BACKEND_URL}/addInnovativeProd`, uploadItem);
+      
       setLoading(false);
       if (response.status === 200 || response.status === 201) {
         toast.success(response.data.msg, {
