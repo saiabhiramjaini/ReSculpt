@@ -6,7 +6,6 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { TextRevealCardPreview } from "../components/text-reveal-cardComponent";
 import { useNavigate } from "react-router-dom";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ContributionInput } from "@abhiram2k03/resculpt";

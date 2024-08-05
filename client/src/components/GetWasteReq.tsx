@@ -3,28 +3,10 @@ import axios from "axios";
 import { ThreeDCardDemo } from "./3d-cardComponent";
 import Lottie from "lottie-react";
 import loadingAnimation from "../assets/loading.json";
-
-interface WasteRequirement {
-  requirementId: number;
-  image: string;
-  name: string;
-  description: string;
-  price: number;
-  initialQuantity: number;
-  requiredQuantity: number;
-  color: string | null;
-  material: string | null;
-  weight: number | null;
-  length: number | null;
-  width: number | null;
-  height: number | null;
-  uploaderId: number;
-  createdAt: string;
-  updatedAt: string;
-}
+import { AddWasteRequirementInput } from "@abhiram2k03/resculpt";
 
 export const GetWasteReq = () => {
-  const [wasteRequirements, setWasteRequirements] = useState<WasteRequirement[]>([]);
+  const [wasteRequirements, setWasteRequirements] = useState<AddWasteRequirementInput[]>([]);
   const [loading, setLoading] = useState(true);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;

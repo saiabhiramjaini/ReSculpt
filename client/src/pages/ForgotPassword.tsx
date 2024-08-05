@@ -53,7 +53,7 @@ export const ForgotPassword = () => {
         });
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -66,6 +66,7 @@ export const ForgotPassword = () => {
         <InputBox
           type="email"
           label="Email"
+          name="email"
           placeholder="enter registered email"
           onChange={(e) => {
             setForgotPasswordData({

@@ -3,29 +3,12 @@ import axios from "axios";
 import { Loading } from "../components/Loading";
 import { NoData } from "../components/NoData";
 import { loadStripe } from "@stripe/stripe-js";
+import { AddWasteRequirementInput } from "@abhiram2k03/resculpt";
 
-interface WasteRequirement {
-  requirementId: number;
-  image: string;
-  name: string;
-  description: string;
-  price: number;
-  initialQuantity: number;
-  requiredQuantity: number;
-  color: string | null;
-  material: string | null;
-  weight: number | null;
-  length: number | null;
-  width: number | null;
-  height: number | null;
-  uploaderId: number;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export const SatisfiedRequirements = () => {
   const [wasteRequirement, setWasteRequirement] = useState<
-    WasteRequirement[] | null
+    AddWasteRequirementInput[] | null
   >(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +20,7 @@ export const SatisfiedRequirements = () => {
     const fetchWasteRequirement = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<{ requirements: WasteRequirement[] }>(
+        const response = await axios.get(
           `${BACKEND_URL}/getSatisfiedWasterequirements`
         );
         setWasteRequirement(response.data.requirements);
@@ -50,7 +33,7 @@ export const SatisfiedRequirements = () => {
     fetchWasteRequirement();
   }, []);
 
-  const makePayment = async (requirement: WasteRequirement) => {
+  const makePayment = async (requirement: AddWasteRequirementInput) => {
     const stripe = await loadStripe(
       "pk_test_51OKk8pSA4aQ6D7MfcNFH6ygysSg8xougwZV4QArep010L9inIqgvU55ColAabtVKZmorhbrkEcq0cVtvGxtUBK8j00cZpKEsaS"
     );

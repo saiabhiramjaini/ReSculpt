@@ -66,7 +66,6 @@ export const WasteReqPage = () => {
       uploaderId={wasteRequirement.uploaderId} 
       createdAt={""} 
       updatedAt={""}/>
-      
     </div>
   );
 };

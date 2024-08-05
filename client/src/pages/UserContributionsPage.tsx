@@ -45,7 +45,7 @@ export const UserContributionsPage = () => {
         const response = await axios.get(`${BACKEND_URL}/getContributions`);
         setContributions(response.data);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       } finally {
         setLoading(false);
       }

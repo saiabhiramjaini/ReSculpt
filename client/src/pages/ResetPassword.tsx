@@ -57,7 +57,7 @@ export const ResetPassword = () => {
         });
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -70,6 +70,7 @@ export const ResetPassword = () => {
         <InputBox
           type="password"
           label="Password"
+          name="password"
           placeholder="password"
           onChange={(e) => {
             setResetPasswordData({
@@ -82,6 +83,7 @@ export const ResetPassword = () => {
         <InputBox
           type="password"
           label="Confirm Password"
+          name="cPassword"
           placeholder="re-enter same password"
           onChange={(e) => {
             setResetPasswordData({

@@ -27,7 +27,6 @@ export const Signin = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setLoading(true);
-    console.log(signinData);
 
     try {
       const response = await axios.post(`${BACKEND_URL}/api/v1/auth/signin`, signinData);
@@ -60,7 +59,7 @@ export const Signin = () => {
         });
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       setLoading(false);
     }

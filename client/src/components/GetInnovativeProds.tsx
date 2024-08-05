@@ -3,27 +3,10 @@ import axios from "axios";
 import { ThreeDCardDemo } from "./3d-cardComponent";
 import Lottie from "lottie-react";
 import loadingAnimation from "../assets/loading.json";
-
-interface InnovativeProd {
-  productId: number;
-  image: string;
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  color: string | null;
-  material: string | null;
-  weight: number | null;
-  length: number | null;
-  width: number | null;
-  height: number | null;
-  uploaderId: number;
-  createdAt: string;
-  updatedAt: string;
-}
+import { AddInnovativeProdInput } from "@abhiram2k03/resculpt";
 
 export const GetInnovativeProds = () => {
-  const [innovativeProd, setInnovativeProd] = useState<InnovativeProd[]>([]);
+  const [innovativeProd, setInnovativeProd] = useState<AddInnovativeProdInput[]>([]);
   const [loading, setLoading] = useState(true);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
