@@ -18,19 +18,6 @@ const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const resculpt_1 = require("@abhiram2k03/resculpt");
 const prisma = new client_1.PrismaClient();
 const InnovativeProd = prisma.innovativeProduct;
-// export const addInnovativeProdSchema = z.object({
-//   image: z.string().optional(),
-//   name: z.string(),
-//   description: z.string(),
-//   price: z.number(),
-//   quantity: z.number(),
-//   color: z.string().optional(),
-//   material: z.string().optional(),
-//   weight: z.number().optional(),
-//   length: z.number().optional(),
-//   width: z.number().optional(),
-//   height: z.number().optional(),
-// });
 const addInnovativeProd = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -41,7 +28,7 @@ const addInnovativeProd = (req, res) => __awaiter(void 0, void 0, void 0, functi
             if (uploadRes) {
                 const innovative_products = yield InnovativeProd.create({
                     data: {
-                        image,
+                        image: uploadRes.url,
                         name,
                         description,
                         price,

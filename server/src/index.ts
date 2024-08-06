@@ -14,9 +14,10 @@ const app = express();
 require("dotenv").config();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://resculpt.abhiramverse.tech',
     credentials: true,
-}))
+}));
+
 app.use(compression());
 app.use(cookieParser());
 app.use(express.json({limit: '50mb'}));

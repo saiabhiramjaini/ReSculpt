@@ -37,7 +37,11 @@ export const signup = async (req: Request, res: Response)=>{
         })
 
         const token = jwt.sign({ userId: saveUser.id }, process.env.JWT_SECRET!);
-        res.cookie('token', token, { httpOnly: true });
+        res.cookie('token', token, { 
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none'
+        });
         
         return res.status(201).json({msg: "User created Successfully", token})
     }

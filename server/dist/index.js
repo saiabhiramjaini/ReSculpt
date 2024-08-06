@@ -16,7 +16,7 @@ const payment_1 = __importDefault(require("./routes/payment"));
 const app = (0, express_1.default)();
 require("dotenv").config();
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:5173',
+    origin: 'https://resculpt.abhiramverse.tech/',
     credentials: true,
 }));
 app.use((0, compression_1.default)());

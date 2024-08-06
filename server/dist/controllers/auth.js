@@ -43,7 +43,11 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         const token = jsonwebtoken_1.default.sign({ userId: saveUser.id }, process.env.JWT_SECRET);
-        res.cookie('token', token, { httpOnly: true });
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        });
         return res.status(201).json({ msg: "User created Successfully", token });
     }
     catch (error) {
